@@ -3,10 +3,12 @@ package ru.job4j.todo.persistence;
 import net.jcip.annotations.ThreadSafe;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @ThreadSafe
 @Repository
@@ -18,48 +20,46 @@ public class UserStore {
     }
 
     public Optional<User> add(User user) {
-        Optional<User> userOptional = Optional.empty();
-        try (Session session = sessionFactory.openSession();
-        ) {
-            session.beginTransaction();
-            session.save(user);
-            userOptional = Optional.of(user);
-            session.getTransaction().commit();
-        } catch (Exception ignored) {
+        try {
+            return tx(session -> {
+                session.save(user);
+                return Optional.of(user);
+            });
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return userOptional;
     }
 
     public Optional<User> findById(int id) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Optional user = session.createQuery("from User where id=:ID")
+        return tx(session -> session.createQuery("from User where id=:ID")
                 .setParameter("ID", id)
-                .uniqueResultOptional();
-        session.getTransaction().commit();
-        session.close();
-        return user;
+                .uniqueResultOptional());
     }
 
     public boolean deleteAll() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        boolean rzl = session.createQuery("delete from User")
-                .executeUpdate() > 0;
-        session.getTransaction().commit();
-        session.close();
-        return rzl;
+        return tx(session -> session.createQuery("delete from User")
+                .executeUpdate() > 0);
     }
 
     public Optional<User> findUserByNameAndPass(String username, String pass) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Optional user = session.createQuery("from User where userName=:nName and pass=:nPass")
+        return tx(session -> session.createQuery("from User where userName=:nName and pass=:nPass")
                 .setParameter("nPass", pass)
                 .setParameter("nName", username)
-                .uniqueResultOptional();
-        session.getTransaction().commit();
-        session.close();
-        return user;
+                .uniqueResultOptional());
+    }
+
+    private <T> T tx(final Function<Session, T> command) {
+        final Session session = sessionFactory.openSession();
+        final Transaction tx = session.beginTransaction();
+        try {
+            T rsl = command.apply(session);
+            tx.commit();
+            return rsl;
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 }
