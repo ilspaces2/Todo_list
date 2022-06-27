@@ -34,13 +34,13 @@ public class ItemStore implements Store {
     public boolean updateById(final int id, final Item item) {
         return tx(session -> session.createQuery(" update Item set "
                         + "itemName=:nName,description=:nDesc, created=:nCreated, finished=:nFinished,"
-                        + "done=:nDone, userId=:nUserId where id=:ID")
+                        + "done=:nDone, user.id=:nUser where id=:ID")
                 .setParameter("nName", item.getItemName())
                 .setParameter("nDesc", item.getDescription())
                 .setParameter("nCreated", item.getCreated())
                 .setParameter("nFinished", item.getFinished())
                 .setParameter("nDone", item.isDone())
-                .setParameter("nUserId", item.getUserId())
+                .setParameter("nUser", item.getUser().getId())
                 .setParameter("ID", id)
                 .executeUpdate() > 0, sessionFactory);
     }
@@ -60,7 +60,7 @@ public class ItemStore implements Store {
     }
 
     public List<Item> findAllByIdUser(final int idUser) {
-        return tx(session -> session.createQuery("from Item where userId=:nUserID ")
+        return tx(session -> session.createQuery("from Item where user.id=:nUserID ")
                 .setParameter("nUserID", idUser)
                 .list(), sessionFactory);
     }

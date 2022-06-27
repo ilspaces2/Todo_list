@@ -18,20 +18,22 @@ public class Item {
     private LocalDateTime created;
     private LocalDateTime finished;
     private boolean done;
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
     public Item() {
     }
 
     public Item(int id, String description, String itemName,
-                LocalDateTime created, LocalDateTime finished, boolean done, int userId) {
+                LocalDateTime created, LocalDateTime finished, boolean done, User user) {
         this.id = id;
         this.description = description;
         this.itemName = itemName;
         this.created = created;
         this.finished = finished;
         this.done = done;
-        this.userId = userId;
+        this.user = user;
     }
 
     public int getId() {
@@ -74,12 +76,12 @@ public class Item {
         this.done = done;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getFinished() {

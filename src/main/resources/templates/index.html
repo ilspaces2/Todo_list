@@ -58,6 +58,7 @@
                 <th scope="col">Задачи</th>
                 <th scope="col">Дата</th>
                 <th scope="col">Прогресс</th>
+                <th scope="col">Имя</th>
             </tr>
             </thead>
             <tbody>
@@ -77,6 +78,8 @@
                 </td>
                 <td th:if="${!item.done}">
                     <i class="fa fa-circle-o"></i>
+                </td>
+                <td th:text="${item.user?.userName}">
                 </td>
             </tr>
             </tbody>

@@ -48,7 +48,7 @@
             <div class="card-body">
                 <form th:action="@{/formUpdateItem}" method="POST" th:object="${item}">
                     <input type="hidden" name="id" th:field="*{id}">
-                    <input type="hidden" name="userId" th:field="*{userId}">
+                    <input type="hidden" name="user.id" th:field="*{user.id}">
                     <input type="hidden" name="done" th:field="*{done}">
                     <div class="form-group">
                         <label>Имя
