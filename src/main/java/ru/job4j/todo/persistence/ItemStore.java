@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Item;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 
@@ -43,6 +44,14 @@ public class ItemStore {
                 .setParameter("nFinished", item.getFinished())
                 .setParameter("nDone", item.isDone())
                 .setParameter("nUserId", item.getUserId())
+                .setParameter("ID", id)
+                .executeUpdate() > 0);
+    }
+
+    public boolean updateByIdWhenDone(final int id) {
+        return tx(session -> session.createQuery(" update Item set finished=:nFinished,done=:nDone where id=:ID")
+                .setParameter("nFinished", LocalDateTime.now())
+                .setParameter("nDone", true)
                 .setParameter("ID", id)
                 .executeUpdate() > 0);
     }

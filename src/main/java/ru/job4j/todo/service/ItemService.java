@@ -40,4 +40,8 @@ public class ItemService {
     public boolean deleteAll() {
         return store.deleteAll();
     }
+
+    public boolean updateByIdWhenDone(int id) {
+        return store.updateByIdWhenDone(id);
+    }
 }

@@ -89,10 +89,7 @@ public class ItemController {
 
     @GetMapping("/doneItem/{itemId}")
     public String doneItem(@PathVariable("itemId") int id) {
-        Item item = itemService.findById(id);
-        item.setDone(true);
-        item.setFinished(LocalDateTime.now());
-        itemService.updateById(id, item);
+        itemService.updateByIdWhenDone(id);
         return "redirect:/index";
     }
 
