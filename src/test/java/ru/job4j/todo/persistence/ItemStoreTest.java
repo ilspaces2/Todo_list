@@ -8,6 +8,7 @@ import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,12 +34,12 @@ public class ItemStoreTest {
 
     @Test
     public void whenAddItem() {
-        Item item = new Item(0, "Desc", "Name",
-                LocalDateTime.now(), LocalDateTime.now(), false, USER);
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        Item item = new Item(0, "Desc", "Name", time, time, false, USER);
         STORE_ITEM.add(item);
         Item itemDB = STORE_ITEM.findById(item.getId());
         assertThat(itemDB.getItemName(), is(item.getItemName()));
-      /*  assertThat(itemDB.getCreated(), is(item.getCreated())); */
+        assertThat(itemDB.getCreated(), is(item.getCreated()));
         assertThat(itemDB.getUser().getId(), is(item.getUser().getId()));
     }
 
