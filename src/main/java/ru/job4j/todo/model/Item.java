@@ -4,6 +4,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,6 +23,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Category> categories = new ArrayList<>();
 
     public Item() {
     }
@@ -90,6 +94,18 @@ public class Item {
 
     public void setFinished(LocalDateTime finished) {
         this.finished = finished;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
     }
 
     @Override

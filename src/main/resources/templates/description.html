@@ -43,6 +43,8 @@
     </nav>
     <div style="width: 100%">
         <h6 th:text="${item.description}"></h6>
+        <h7>Категории: </h7>
+        <h7 th:each="cat : ${item.categories}" th:text="${cat.categoryName+' '}"></h7>
     </div>
     <a class="btn btn-primary" th:href="@{|/deleteItem/${item.id}|}"><i class="fa fa-trash"></i></a>
     <a class="btn btn-primary" th:if="${!item.done}" th:href="@{|/updateItem/${item.id}|}">

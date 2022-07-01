@@ -54,7 +54,8 @@ public class ItemStore implements Store {
     }
 
     public Item findById(final int id) {
-        return (Item) tx(session -> session.createQuery("from Item where id=:ID")
+        return (Item) tx(session -> session.createQuery(
+                        "select distinct c from Item c join fetch c.categories where c.id=:ID")
                 .setParameter("ID", id)
                 .uniqueResult(), sessionFactory);
     }

@@ -6,10 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ThreadSafe
 @Controller
@@ -17,8 +19,11 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    public ItemController(ItemService itemService) {
+    private final CategoryService categoryService;
+
+    public ItemController(ItemService itemService, CategoryService categoryService) {
         this.itemService = itemService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/index")
@@ -51,11 +56,15 @@ public class ItemController {
     @GetMapping("/addItem")
     public String addItem(Model model, HttpSession sessionUser) {
         model.addAttribute("user", getUser(sessionUser));
+        model.addAttribute("categories", categoryService.findAll());
         return "formAddItem";
     }
 
     @PostMapping("/formAddItem")
-    public String formAddItem(@ModelAttribute Item item) {
+    public String formAddItem(@ModelAttribute Item item, @RequestParam("category.id") List<Integer> catIdList) {
+        for (var catId : catIdList) {
+            item.addCategory(categoryService.findById(catId));
+        }
         itemService.add(item);
         return "redirect:/index";
     }
