@@ -3,8 +3,8 @@ package ru.job4j.todo.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,8 +17,10 @@ public class Item {
     private String description;
     private String itemName;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime created;
-    private LocalDateTime finished;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date finished;
     private boolean done;
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -30,7 +32,7 @@ public class Item {
     }
 
     public Item(int id, String description, String itemName,
-                LocalDateTime created, LocalDateTime finished, boolean done, User user) {
+                Date created, Date finished, boolean done, User user) {
         this.id = id;
         this.description = description;
         this.itemName = itemName;
@@ -64,11 +66,11 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public LocalDateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
@@ -88,11 +90,11 @@ public class Item {
         this.user = user;
     }
 
-    public LocalDateTime getFinished() {
+    public Date getFinished() {
         return finished;
     }
 
-    public void setFinished(LocalDateTime finished) {
+    public void setFinished(Date finished) {
         this.finished = finished;
     }
 

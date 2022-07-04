@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Item;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @ThreadSafe
@@ -47,7 +47,7 @@ public class ItemStore implements Store {
 
     public boolean updateByIdWhenDone(final int id) {
         return tx(session -> session.createQuery(" update Item set finished=:nFinished,done=:nDone where id=:ID")
-                .setParameter("nFinished", LocalDateTime.now())
+                .setParameter("nFinished", new Date())
                 .setParameter("nDone", true)
                 .setParameter("ID", id)
                 .executeUpdate() > 0, sessionFactory);
